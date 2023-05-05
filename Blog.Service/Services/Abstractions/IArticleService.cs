@@ -10,6 +10,8 @@ namespace Blog.Service.Services.Abstractions
 {
     public interface IArticleService
     {
-        Task<List<ArticleViewModel>> GetAllArticlesAsync();
+        Task<List<ArticleViewModel>> GetAllArticlesWithCategoryNonDeletedAsync();
+
+        Task CreateArticleAsync(ArticleAddViewModel articleAddViewModel);
     }
 }
