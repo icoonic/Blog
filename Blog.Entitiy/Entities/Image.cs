@@ -9,6 +9,15 @@ namespace Blog.Entitiy.Entities
 {
     public class Image : EntityBase
     {
+        public Image()
+        {
+        }
+        public Image(string filename, string filetype)
+        {
+            FileName = filename;
+            FileType = filetype;
+        }
+
         public Guid Id { get; set; }
         public string FileName { get; set; }
         public string FileType { get; set; }
