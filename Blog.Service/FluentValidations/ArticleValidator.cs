@@ -22,7 +22,7 @@ namespace Blog.Service.FluentValidations
             RuleFor(x => x.Content)
                 .NotEmpty()
                 .NotNull()
-                .MaximumLength(150)
+                .MaximumLength(1500)
                 .MinimumLength(5)
                 .WithName("İçerik");
 

@@ -8,13 +8,14 @@ namespace Blog.Entitiy.Entities
         {
 
         }
-        public Article(string title, string content, Guid userId, Guid categoyId, Guid imageId) 
+        public Article(string title, string content, Guid userId, string createdBy, Guid categoyId, Guid imageId) 
         {
             Title = title;
             Content = content;
             UserId = userId;
             CategoryId = categoyId;
             ImageId = imageId;
+            CreatedBy = createdBy;
         }
 
         public string Title { get; set; }
