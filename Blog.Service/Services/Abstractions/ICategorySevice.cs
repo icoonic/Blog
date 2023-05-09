@@ -9,6 +9,7 @@ namespace Blog.Service.Services.Abstractions
 {
     public interface ICategorySevice
     {
+        Task CreateCategoryAsync(CategoryAddViewModel categoryAddViewModel);
         public Task<List<CategoryViewModel>> GetAllCategoriesNonDeleted();
     }
 }

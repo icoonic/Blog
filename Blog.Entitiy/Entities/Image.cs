@@ -1,4 +1,5 @@
 ﻿using Blog.Core.Entities;
+using Blog.Entitiy.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,11 @@ namespace Blog.Entitiy.Entities
         public Image()
         {
         }
-        public Image(string filename, string filetype)
+        public Image(string filename, string filetype, string createdBy)
         {
             FileName = filename;
             FileType = filetype;
+            CreatedBy = createdBy;
         }
 
         public Guid Id { get; set; }

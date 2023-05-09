@@ -13,9 +13,10 @@ namespace Blog.Entitiy.Entities
         {
 
         }
-        public Category(string name)
+        public Category(string name, string createdBy)
         {
             Name = name;
+            CreatedBy = createdBy;
         }
          
         public Guid Id { get; set; }

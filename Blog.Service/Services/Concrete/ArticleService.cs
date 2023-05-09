@@ -1,11 +1,17 @@
 ﻿using AutoMapper;
 using Blog.Data.UnitOfWorks;
 using Blog.Entitiy.Entities;
+using Blog.Entitiy.Enums;
 using Blog.Entitiy.ViewModels_DTOs.Articles;
+using Blog.Service.Extensions;
+using Blog.Service.Helpers.Images;
 using Blog.Service.Services.Abstractions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,19 +21,33 @@ namespace Blog.Service.Services.Concrete
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IImageHelper imageHelper;
+        private readonly ClaimsPrincipal _user;
 
-        public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)  
+        public ArticleService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, IImageHelper imageHelper)  
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
+            _user = httpContextAccessor.HttpContext.User;
+            this.imageHelper = imageHelper;
+            
         }
 
 
         public async Task CreateArticleAsync(ArticleAddViewModel articleAddViewModel)
         {
-            var userId = Guid.Parse("36E8F3D6-0E25-4D65-8CA6-81CA01C49461");
-            var imageId = Guid.Parse("ABC8D06F-0A4B-4724-BA66-BF978E15B82D");
-            var article = new Article(articleAddViewModel.Title, articleAddViewModel.Content, userId, articleAddViewModel.CategoryId, imageId);
+            var userId = _user.GetLoggedInUserId();
+            var userEmail = _user.GetLoggedInEmail();
+
+            var imageUpload = await imageHelper.Upload(articleAddViewModel.Title, articleAddViewModel.Photo, ImageType.Post);
+            Image image = new(imageUpload.FullName,articleAddViewModel.Photo.ContentType,userEmail);
+
+            await unitOfWork.GetRepository<Image>().AddAsync(image);
+
+            var article = new Article(articleAddViewModel.Title, articleAddViewModel.Content, userId, userEmail, articleAddViewModel.CategoryId, image.Id);
+
             
 
             await unitOfWork.GetRepository<Article>().AddAsync(article);
@@ -45,30 +65,47 @@ namespace Blog.Service.Services.Concrete
         public async Task<ArticleViewModel> GetArticleWithCategoryNonDeletedAsync(Guid articleId)
         {
 
-            var articles = await unitOfWork.GetRepository<Article>().GetAsync(x => !x.IsDeleted && x.Id ==articleId, x => x.Category);
+            var articles = await unitOfWork.GetRepository<Article>().GetAsync(x => !x.IsDeleted && x.Id ==articleId, x => x.Category, i => i.Image);
             var map = mapper.Map<ArticleViewModel>(articles);
 
             return map;
         }
-        public async Task UpdateArticleAsync(ArticleUpdateViewModel articleUpdateViewModel) 
+        public async Task<string> UpdateArticleAsync(ArticleUpdateViewModel articleUpdateViewModel) 
         {
-            var article = await unitOfWork.GetRepository<Article>().GetAsync(x => !x.IsDeleted && x.Id == articleUpdateViewModel.Id, x => x.Category);
+            var userEmail = _user.GetLoggedInEmail();
+            var article = await unitOfWork.GetRepository<Article>().GetAsync(x => !x.IsDeleted && x.Id == articleUpdateViewModel.Id, x => x.Category, i => i.Image);
+            if(articleUpdateViewModel.Photo != null)
+            {
+                imageHelper.Delete(article.Image.FileName);
+                var imageUpload = await imageHelper.Upload(articleUpdateViewModel.Title, articleUpdateViewModel.Photo, ImageType.Post);
+                Image image = new(imageUpload.FullName,articleUpdateViewModel.Photo.ContentType, userEmail);
+                await unitOfWork.GetRepository<Image>().AddAsync(image);
 
+                article.ImageId = image.Id;
+            }
             article.Title = articleUpdateViewModel.Title;
             article.Content = articleUpdateViewModel.Content;
             article.CategoryId = articleUpdateViewModel.CategoryId; 
+            article.ModifiedDate =DateTime.Now;
+            article.ModifiedBy = userEmail;
 
             await unitOfWork.GetRepository<Article>().UpdateAsync(article);
             await unitOfWork.SaveAsync();
 
+            return article.Title;
+
         }
-        public async Task SafeDeleteArticleAsync(Guid articleId)
+        public async Task<string> SafeDeleteArticleAsync(Guid articleId)
         {
+            var userEmail = _user.GetLoggedInEmail();
             var article = await unitOfWork.GetRepository<Article>().GetByGuidAsync(articleId);
             article.IsDeleted = true;
             article.DeletedDate = DateTime.Now;
+            article.DeletedBy = userEmail;
+
             await unitOfWork.GetRepository<Article>().UpdateAsync(article);
             await unitOfWork.SaveAsync();
+            return article.Title;
         }
 
     }
