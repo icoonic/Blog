@@ -76,7 +76,7 @@ namespace Blog.Service.Helpers.Images
         public async Task<ImageUploadedViewModel> Upload(string name, IFormFile imageFile, ImageType imageType, string folderName = null)
         {
            folderName ??= imageType == ImageType.User ? UserImagesFolder : articleImagesFolder;
-            if (!Directory.Exists($"{wwwroot}/{imgFolder}/{folderName}")) ;
+            if (!Directory.Exists($"{wwwroot}/{imgFolder}/{folderName}")) 
                 Directory.CreateDirectory($"{wwwroot}/{imgFolder}/{folderName}");
             string oldFileName = Path.GetFileNameWithoutExtension(imageFile.FileName);
             string fileExtension = Path.GetExtension(imageFile.FileName);
@@ -101,7 +101,9 @@ namespace Blog.Service.Helpers.Images
         {
             var fileToDelete = Path.Combine($"{wwwroot}/{imgFolder}/{imageName}");
             if (File.Exists(fileToDelete))
+           
                 File.Delete(fileToDelete);
+          
         }
 
     }

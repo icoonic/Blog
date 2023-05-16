@@ -14,6 +14,9 @@ namespace Blog.Service.AutoMapper.Categories
         public CategoryProfile() 
         {
             CreateMap<CategoryViewModel,Category>().ReverseMap();
+            CreateMap<CategoryAddViewModel, Category>().ReverseMap();
+            CreateMap<CategoryUpdateViewModel, Category>().ReverseMap();
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Blog.Entitiy.ViewModels_DTOs.Categories;
+﻿using Blog.Entitiy.Entities;
+using Blog.Entitiy.ViewModels_DTOs.Categories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,10 @@ namespace Blog.Service.Services.Abstractions
 {
     public interface ICategorySevice
     {
+        Task<List<CategoryViewModel>> GetAllCategoriesNonDeleted();
         Task CreateCategoryAsync(CategoryAddViewModel categoryAddViewModel);
-        public Task<List<CategoryViewModel>> GetAllCategoriesNonDeleted();
+        Task<Category> GetCategoryByGuid(Guid id);
+        Task<string> UpdateCategoryAsync(CategoryUpdateViewModel categoryUpdateViewModel);
+        Task<string> SafeDeleteCategoryAsync(Guid categoryId);
     }
 }
