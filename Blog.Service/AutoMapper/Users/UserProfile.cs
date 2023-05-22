@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Blog.Entitiy.Entities;
 using Blog.Entitiy.ViewModels_DTOs.Categories;
+using Blog.Entitiy.ViewModels_DTOs.Images;
 using Blog.Entitiy.ViewModels_DTOs.Users;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,10 @@ namespace Blog.Service.AutoMapper.Users
         {
             CreateMap<AppUser, UserViewModel>().ReverseMap();
             CreateMap<AppUser, UserAddViewModel>().ReverseMap();
-           
+            CreateMap<AppUser, UserUpdateViewModel>().ReverseMap();
+
+
+
 
         }
     }
