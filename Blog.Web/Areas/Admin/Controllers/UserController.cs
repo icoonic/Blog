@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using Blog.Data.UnitOfWorks;
 using Blog.Entitiy.Entities;
+using Blog.Entitiy.Enums;
+using Blog.Entitiy.ViewModels_DTOs.Articles;
 using Blog.Entitiy.ViewModels_DTOs.Images;
 using Blog.Entitiy.ViewModels_DTOs.Users;
 using Blog.Service.Extensions;
+using Blog.Service.Helpers.Images;
 using Blog.Web.ResultMessages;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -20,18 +24,24 @@ namespace Blog.Web.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<AppUser> userManager;
+        private readonly IUnitOfWork unitOfWork;
         private readonly RoleManager<AppRole> roleManager;
+        private readonly IImageHelper imageHelper;
         private readonly IValidator<AppUser> validator;
         private readonly IToastNotification toast;
+        private readonly SignInManager<AppUser> signInManager;
         private readonly IMapper mapper;
 
 
-        public UserController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IValidator<AppUser> validator, IToastNotification toast, IMapper mapper)
+        public UserController(UserManager<AppUser> userManager, IUnitOfWork unitOfWork, RoleManager<AppRole> roleManager, IImageHelper imageHelper, IValidator<AppUser> validator, IToastNotification toast, SignInManager<AppUser> signInManager, IMapper mapper)
         {
             this.userManager = userManager;
+            this.unitOfWork = unitOfWork;
             this.roleManager = roleManager;
+            this.imageHelper = imageHelper;
             this.validator = validator;
             this.toast = toast;
+            this.signInManager = signInManager;
             this.mapper = mapper;
         }
 
@@ -158,12 +168,81 @@ namespace Blog.Web.Areas.Admin.Controllers
             }
             else
             {
-                foreach (var errors in result.Errors)
-                    ModelState.AddModelError("", errors.Description);
+                result.AddToIdentityModelState(this.ModelState);
             }
             return NotFound();
+        }
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            var map =mapper.Map<UserProfileViewModel>(user);
+            return View(map);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Profile(UserProfileViewModel userProfileViewModel)
+        {
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            if (ModelState.IsValid)
+            {
+                var isVerified = await userManager.CheckPasswordAsync(user, userProfileViewModel.CurrentPassword);
+                if (isVerified && userProfileViewModel.NewPassword != null && userProfileViewModel.Photo != null)
+                {
+                    var result = await userManager.ChangePasswordAsync(user, userProfileViewModel.CurrentPassword, userProfileViewModel.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        await userManager.UpdateSecurityStampAsync(user);
+                        await signInManager.SignOutAsync();
+                        await signInManager.PasswordSignInAsync(user, userProfileViewModel.NewPassword, true, false);
 
+                        user.FirstName = userProfileViewModel.FirstName;
+                        user.LastName = userProfileViewModel.LastName;
+                        user.PhoneNumber = userProfileViewModel.PhoneNumber;
 
+                        var imageUpload = await imageHelper.Upload($"{userProfileViewModel.FirstName}{userProfileViewModel.LastName}", userProfileViewModel.Photo, ImageType.User);
+                        Image image = new(imageUpload.FullName, userProfileViewModel.Photo.ContentType, user.Email);
+
+                        await unitOfWork.GetRepository<Image>().AddAsync(image);
+
+                        user.ImageId = image.Id;
+
+                        await userManager.UpdateAsync(user);
+                        await unitOfWork.SaveAsync();
+                        toast.AddSuccessToastMessage("Şifre başarıyla değiştirildi.");
+                        return View();
+                    }
+                    else
+
+                        result.AddToIdentityModelState(ModelState); return View();
+
+                }
+                else if (isVerified && userProfileViewModel.Photo != null)
+                {
+                    await userManager.UpdateSecurityStampAsync(user);
+                    user.FirstName = userProfileViewModel.FirstName;
+                    user.LastName = userProfileViewModel.LastName;
+                    user.PhoneNumber = userProfileViewModel.PhoneNumber;
+
+                    var imageUpload = await imageHelper.Upload($"{userProfileViewModel.FirstName}{userProfileViewModel.LastName}", userProfileViewModel.Photo, ImageType.User);
+                    Image image = new(imageUpload.FullName, userProfileViewModel.Photo.ContentType, user.Email);
+
+                    await unitOfWork.GetRepository<Image>().AddAsync(image);
+
+                    user.ImageId = image.Id;
+
+                    await userManager.UpdateAsync(user);
+                    await unitOfWork.SaveAsync();
+                 
+                    toast.AddSuccessToastMessage("Bigiler başarıyla değiştirildi.");
+                    return View();
+                }
+                else
+                    toast.AddErrorToastMessage("Hata"); return View();
+
+            }
+
+            return View();
         }
     }
 }
+

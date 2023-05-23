@@ -43,6 +43,8 @@ namespace Blog.Service.Services.Concrete
             var imageUpload = await imageHelper.Upload(articleAddViewModel.Title, articleAddViewModel.Photo, ImageType.Post);
             Image image = new(imageUpload.FullName, articleAddViewModel.Photo.ContentType, userEmail);
 
+            await unitOfWork.GetRepository<Image>().AddAsync(image);
+
             var article = new Article(articleAddViewModel.Title, articleAddViewModel.Content, userId, userEmail, articleAddViewModel.CategoryId, image.Id);
 
 
