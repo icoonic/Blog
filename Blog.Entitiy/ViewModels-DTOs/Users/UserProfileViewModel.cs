@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Blog.Entitiy.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Blog.Entitiy.ViewModels_DTOs.Users
 {
@@ -16,6 +18,8 @@ namespace Blog.Entitiy.ViewModels_DTOs.Users
         public string CurrentPassword { get; set; }
         public string? NewPassword { get; set; }
         public IFormFile? Photo { get; set; }
+        public Image Image { get; set; } 
+       
 
     }
 }

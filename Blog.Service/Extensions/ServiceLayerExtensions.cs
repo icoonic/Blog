@@ -18,7 +18,11 @@ namespace Blog.Service.Extensions
 
             services.AddScoped<IArticleService, ArticleService> ();
             services.AddScoped<ICategorySevice, CategorySevice>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IImageHelper, ImageHelper>();
+            services.AddScoped<IDashboardService, DashboardService>();
+
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAutoMapper(assembly);
 

@@ -13,7 +13,7 @@
        
         <div class="table-responsive text-nowrap m-5">
             @{
-                @if (User.IsInRole($"{RoleConsts.Superadmin}, {RoleConsts.Admin}"))
+                @if (!User.IsInRole($"{RoleConsts.User}"))
                 {
                     <a class="btn btn-success mb-4" asp-area="Admin" asp-controller="Article" asp-action="Add">
                         Makale Ekle <i class="bx bx-plus"></i>
@@ -55,7 +55,7 @@
                             <td>@(article.IsDeleted ? "Aktif Değil" : "Aktif")</td>
 
                             @{
-                                @if (User.IsInRole($"{RoleConsts.Superadmin}, {RoleConsts.Admin}"))
+                                @if (!User.IsInRole($"{RoleConsts.User}"))
                                 {
                                     <td>
 
