@@ -39,8 +39,8 @@ namespace Blog.Service.Services.Concrete
             pageSize = pageSize > 20 ? 20 : pageSize;
 
             var articles = categoryId == null
-                ? await unitOfWork.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted, a => a.Category, i => i.Image)
-                : await unitOfWork.GetRepository<Article>().GetAllAsync(a => a.CategoryId == categoryId && !a.IsDeleted, x => x.Category, i => i.Image);
+                ? await unitOfWork.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted, a => a.Category, i => i.Image, u => u.User)
+                : await unitOfWork.GetRepository<Article>().GetAllAsync(a => a.CategoryId == categoryId && !a.IsDeleted, x => x.Category, i => i.Image, u => u.User);
             var sortedArticles = isAscending
                 ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
                 : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
@@ -84,7 +84,7 @@ namespace Blog.Service.Services.Concrete
         public async Task<ArticleViewModel> GetArticleWithCategoryNonDeletedAsync(Guid articleId)
         {
 
-            var articles = await unitOfWork.GetRepository<Article>().GetAsync(x => !x.IsDeleted && x.Id == articleId, x => x.Category, i => i.Image);
+            var articles = await unitOfWork.GetRepository<Article>().GetAsync(x => !x.IsDeleted && x.Id == articleId, x => x.Category, i => i.Image, u => u.User);
             var map = mapper.Map<ArticleViewModel>(articles);
 
             return map;
@@ -118,8 +118,6 @@ namespace Blog.Service.Services.Concrete
             await unitOfWork.SaveAsync();
 
             return article.Title;
-
-
 
         }
         public async Task<string> SafeDeleteArticleAsync(Guid articleId)
@@ -157,6 +155,26 @@ namespace Blog.Service.Services.Concrete
             return article.Title;
         }
 
+        public async Task<ArticleListViewModel> SearchAsync(string keyword, int currentPage = 1, int pageSize = 3, bool isAscending = false)
+        {
+            pageSize = pageSize > 20 ? 20 : pageSize;
 
+            var articles = await unitOfWork.GetRepository<Article>().GetAllAsync(
+                a => !a.IsDeleted && (a.Title.Contains(keyword) || a.Content.Contains(keyword) || a.Category.Name.Contains(keyword)),
+              a => a.Category, i => i.Image, u => u.User);
+
+            var sortedArticles = isAscending
+                ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
+                : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+            return new ArticleListViewModel
+            {
+                Articles = sortedArticles,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                TotalCount = articles.Count,
+                IsAscending = isAscending
+            };
+
+        }
     }
 }
