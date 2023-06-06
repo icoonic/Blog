@@ -1,5 +1,9 @@
-﻿using Blog.Service.Services.Abstractions;
+﻿using Blog.Entitiy.Entities;
+using Blog.Entitiy.ViewModels_DTOs.Login;
+using Blog.Service.Services.Abstractions;
 using Blog.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -9,11 +13,15 @@ namespace Blog.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IArticleService articleService;
+        private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
 
-        public HomeController(ILogger<HomeController> logger, IArticleService articleService)
+        public HomeController(ILogger<HomeController> logger, IArticleService articleService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _logger = logger;
             this.articleService = articleService;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
         [HttpGet]
         public async Task<IActionResult> Index(Guid? categoryId, int currentPage = 1, int pageSize = 3, bool isAscending = false)
@@ -44,6 +52,45 @@ namespace Blog.Web.Controllers
         {
             var article = await articleService.GetArticleWithCategoryNonDeletedAsync(id);
             return View(article);
+        }
+
+        [HttpGet]
+        public IActionResult GirisYap()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> GirisYap(LoginViewModel loginViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByNameAsync(loginViewModel.Username);
+                if (user != null)
+                {
+                    var result = await signInManager.PasswordSignInAsync(user, loginViewModel.Password, loginViewModel.RememberMe, false);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home", new { Area = "" });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Kullanıcı adı veya şifre yanlış.");
+                        return View();
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Kullanıcı adı veya şifre yanlış.");
+                    return View();
+                }
+            }
+            else
+            {
+
+                return View();
+            }
         }
 
     }

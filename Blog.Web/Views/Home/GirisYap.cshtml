@@ -1,0 +1,85 @@
+﻿@{
+    Layout = null;
+}
+@model LoginViewModel
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Giriş</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Blend  Login Form template Responsive, Login form web template,Flat Pricing tables,Flat Drop downs  Sign up Web Templates, Flat Web Templates, Login sign up Responsive web template, SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- Custom Theme files -->
+    <link href="~/web/css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="~/web/css/font-awesome.css" rel="stylesheet"> <!-- Font-Awesome-Icons-CSS -->
+    <!-- //Custom Theme files -->
+    <!-- web font -->
+    <link href="//fonts.googleapis.com/css?family=Vollkorn+SC:400,600,700,900&amp;subset=cyrillic,cyrillic-ext,latin-ext,vietnamese" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Acme" rel="stylesheet">
+    <!-- //web font -->
+</head>
+<body>
+    <!-- main -->
+    <div class="main">
+        <div class="main-w3lsrow">
+            <!-- login form -->
+
+            <form asp-controller="Home" asp-action="GirisYap" id="formAuthentication" class="mb-3" method="POST">
+                <div asp-validation-summary="All"></div>
+                <div class="mb-3">
+                    <label asp-for="Username" for="username" class="form-label">Username</label>
+                    <input asp-for="Username" type="username" class="form-control" id="username" name="username" placeholder="Mail adresinizi giriniz" autofocus>
+                    <span asp-validation-for="Username"></span>
+                </div>
+                <div class="mb-3 form-password-toggle">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label" for="password">Şifre</label>
+                        <a href="auth-forgot-password-basic.html">
+                            <small>Şifremi Unuttum</small>
+                        </a>
+                    </div>
+                    <div class="input-group input-group-merge">
+                        <input asp-for="Password" type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        <span asp-validation-for="Username"></span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="RememberMe" type="checkbox" id="remember-me">
+                        <label class="form-check-label" asp-for="RememberMe" for="remember-me">
+                            Beni Hatırla
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <a asp-controller="Home" asp-action="Index"></a>
+                    <button class="btn btn-primary d-grid w-100" type="submit">Giriş</button>
+                </div>
+            </form>
+
+            <p class="text-center">
+                <span>New on our platform?</span>
+                <a href="auth-register-basic.html">
+                    <span>Hesap Oluştur</span>
+                </a>
+            </p>
+        </div>
+    </div>
+    <!-- copyright -->
+    <div class="copyright">
+        <p> Tüm hakları saklıdır. <a href="http://w3layouts.com/" target="_blank"></a></p>
+    </div>
+    <!-- //copyright -->
+    </div>
+    <!-- //main -->
+</body>
+</html>
+

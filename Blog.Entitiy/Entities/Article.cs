@@ -8,12 +8,12 @@ namespace Blog.Entitiy.Entities
         {
 
         }
-        public Article(string title, string content, Guid userId, string createdBy, Guid categoyId, Guid imageId) 
+        public Article(string title, string content, Guid userId, string createdBy, Guid categoryId, Guid imageId) 
         {
             Title = title;
             Content = content;
             UserId = userId;
-            CategoryId = categoyId;
+            CategoryId = categoryId;
             ImageId = imageId;
             CreatedBy = createdBy;
         }
@@ -25,7 +25,7 @@ namespace Blog.Entitiy.Entities
         public Category Category { get; set; }
         public Guid? ImageId { get; set; }
         public Image Image { get; set; }
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }  
         public AppUser User { get; set; }
 
 

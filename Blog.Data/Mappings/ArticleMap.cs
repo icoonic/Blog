@@ -26,7 +26,7 @@ namespace Blog.Data.Mappings
                 CreatedBy = "Admin Test",
                 CreatedDate = DateTime.Now,
                 IsDeleted = false,
-                UserId = Guid.Parse("36E8F3D6-0E25-4D65-8CA6-81CA01C49461")
+                UserId = Guid.Parse("{AAAC3B44-AB15-4970-A3EA-A20C906A9DBF}")
             },
             new Article
             {
@@ -39,7 +39,7 @@ namespace Blog.Data.Mappings
                 CreatedBy = "Admin Test",
                 CreatedDate = DateTime.Now,
                 IsDeleted = false,
-                UserId = Guid.Parse("C5D057F3-9607-4F33-AF58-10BFAD7F664C")
+                UserId = Guid.Parse("{0FC132E2-5E2A-4B8D-8265-5AF49E96AFF9}")
 
             });
 

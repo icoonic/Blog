@@ -27,23 +27,40 @@
         <!-- ***** Preloader End ***** -->
         <!-- Header -->
         <header class="">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-light d-none d-lg-block" id="templatemo_nav_top">
+            <div class="container text-light">
+                <div class="w-100 d-flex justify-content-between">
+                    <div>
+                        <i class="fa fa-envelope mx-2"></i>
+                        <a class="navbar-sm-brand text-light text-decoration-none" href="mailto:info@company.com">info@company.com</a>
+                        <i class="fa fa-phone mx-2"></i>
+                        <a class="navbar-sm-brand text-light text-decoration-none" href="tel:010-020-0340">010-020-0340</a>
+                    </div>
+                    <div class="d-none d-lg-block ms-lg-3">
+                        <a class="btn custom-btn custom-border-btn" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">Member Login</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
             <nav class="navbar navbar-expand-lg">
+
                 <div class="container">
-                    <a class="navbar-brand" asp-controller="Home" asp-action="Index"><h2>ANASAYFA<em>.</em></h2></a>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index"><h2>ANASAYFA</h2></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
+
+
                     <div class="collapse navbar-collapse" id="navbarResponsive">
                         <ul class="navbar-nav ml-auto">
-
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="about.html">Hakkında</a>
                         </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="about.html">Iletişim</a>
-                            </li>
-
+                          
                         </ul>
+
                     </div>
                 </div>
             </nav>
@@ -110,3 +127,7 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
+
+
