@@ -25,7 +25,7 @@ namespace Blog.Entitiy.Entities
         public Category Category { get; set; }
         public Guid? ImageId { get; set; }
         public Image Image { get; set; }
-        public Guid? UserId { get; set; }  
+        public Guid UserId { get; set; }  = Guid.Empty;
         public AppUser User { get; set; }
 
 

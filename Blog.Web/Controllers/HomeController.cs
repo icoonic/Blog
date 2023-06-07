@@ -13,10 +13,10 @@ namespace Blog.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IArticleService articleService;
-        private readonly UserManager<AppUser> userManager;
-        private readonly SignInManager<AppUser> signInManager;
+        private readonly UserManager<LoginUser> userManager;
+        private readonly SignInManager<LoginUser> signInManager;
 
-        public HomeController(ILogger<HomeController> logger, IArticleService articleService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public HomeController(ILogger<HomeController> logger, IArticleService articleService, UserManager<LoginUser> userManager, SignInManager<LoginUser> signInManager)
         {
             _logger = logger;
             this.articleService = articleService;

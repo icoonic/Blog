@@ -4,8 +4,8 @@ namespace Blog.Entitiy.Entities
 {
     public class AppUser : IdentityUser<Guid>, IEntitiyBase
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string? FirstName { get; set; } = String.Empty;
+        public string? LastName { get; set; } = String.Empty;
         public Guid ImageId { get; set; } = Guid.Parse("f3e0e426-832c-4b91-1a65-08db5cf963f2");
         public Image Image { get; set; }    
         public ICollection<Article> Articles { get; set; }  
